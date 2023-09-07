@@ -1,0 +1,24 @@
+docker-compose up --url
+
+# Docker-compose:
+# https://www.hostinger.com.br/tutoriais/instalar-node-js-ubuntu
+sudo apt install wget
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+source ~/.profile
+nvm ls-remote
+
+
+nvm install 14.21.3
+node --version
+
+npm init -y
+npm install -y typescript@4.1.6
+npm install -y zone.js@~0.11.4
+npm install -y @angular/forms@^12.0.0
+npm install -y @angular/platform-browser@12.2.17
+npm install -y @angular/cli@^12.2.0
+npm install -y @angular/animations@^12.0.0
+npm install -y @angular/cdk@^12.2.13
+npm install -y @angular/core@^12.2.17
+npm install -y @angular/common@^12.0.0
+npm install -y @angular/material
