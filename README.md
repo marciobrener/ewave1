@@ -1,6 +1,6 @@
 # Desafio
 Criar um sistema Web composto de um Front-end SPA (Single Page Application) Angular e um Back-end Java Spring Boot para envio de arquivos XML e posterior processamento deles.
-# Requisitos
+## Requisitos
 * Criar uma interface Web para upload de um ou mais arquivos com extensão .xml;
 *	Para o desenvolvimento da interface, deve ser utilizado o tema Indigo do Angular Material;
 *	Durante o envio do(s) arquivo(s) mostrar um loader para informar ao usuário que estão sendo processados, e ao final esse loader deve desaparecer (utilizar componentes do Angular Material);
@@ -14,22 +14,33 @@ Criar um sistema Web composto de um Front-end SPA (Single Page Application) Angu
 *	Os arquivos podem conter quantidades grandes de dados, por exemplo, 1.000 agentes (agentes/agente[0..999])
 *	Os dados de preço médio (/agentes/agente[]/submercado[]/precoMedio) são confidenciais, portanto devem ser removidos ou substituídos por valores em branco antes de serem enviados.
 *	Ao receber cada arquivo, o back-end deve apenas imprimir na saída padrão (System.out) os códigos de agentes (/agentes/agente[]/codigo) recebidos.
-# Atualizar 
+## Atualizar 
 * Salvar os itens no Banco de dados;
 * Recuperar um dado consolidado por região.
-# Instruções
+## Instruções
 Criar o sistema utilizando as seguintes tecnologias base:
-## Front-end
+### Front-end
 * Angular 12+
 * Angular Material 12+
 * Typescript 4+
 * RxJS 6+
 * NodeJS 14+
-## Back-end
+### Back-end
 * Spring Boot 2 
 * Maven 3
 * JPA
 * Hibernate
-## Banco de Dados
+### Banco de Dados
 ?
 > Disponibilizá-lo em um repositório Git público (exemplo: GitHub, Bitbucket).
+
+# Solução do Desafio para avaliações
+## Serviço(s)
+### Compilação
+mvn clean install
+
+### Testes
+mvn test
+
+### Execução
+mvn spring-boot:run
