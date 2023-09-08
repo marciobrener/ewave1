@@ -44,3 +44,6 @@ mvn test
 
 ### Execução
 mvn spring-boot:run
+
+## Configurações dos serviço(s)
+Os limites dos tamanhos dos arquivos para upload foram definidos na configuração via propriedades (ver src/main/resources/application.properties).
