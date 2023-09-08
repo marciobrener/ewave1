@@ -47,3 +47,14 @@ mvn spring-boot:run
 
 ## Configurações dos serviço(s)
 Os limites dos tamanhos dos arquivos para upload foram definidos na configuração via propriedades (ver src/main/resources/application.properties).
+
+## Metodologia(s) do desenvolvimento das soluções do desafio 1
+* Primeiro foi desenvolvido o teste da leitura dos arquivos XML (conforme as melhores práticas de TDD);
+* Teste desenvolvido, então, a implementação do leitor de XML conforme a simplicidade mínima necessária à avaliação e fazendo uso de biblioteca padrão Maven JSON2;
+* Implementação do serviço Spring para receber o upload, tendo-se em mente a segurança para aceitar requisição exclusivamente localhost:* em qualquer porta por meio das configurações de CORs/Origin;
+* Etapa de testes incrementando os arquivos XMLs para tamanhos grandes (mais de 50 megas);
+* Ajustes das configurações dos serviços Spring (src/main/resources/application.properties) para funcionar parametrizadamente confirme os limites dos arquivos ao negócio;
+* Testes finais para avaliação da conclusão do MVP necessário;
+* Refatoração final do código;
+* Commit na branch de release (usadando-se a metodologia GitFlow);
+* Merge na branch master.
