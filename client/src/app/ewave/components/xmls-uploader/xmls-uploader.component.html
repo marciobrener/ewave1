@@ -1,0 +1,29 @@
+<div class="form-group">
+    <label for="file">Arquivo(s)</label>
+    <input 
+        formControlName="file"
+        id="file" 
+        type="file"
+        multiple
+        class="form-control"
+        (change)="change($any($event.target).files)">
+        <!--
+
+            <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
+                <div *ngIf="f.file.errors && f.file.errors.required">File is required.</div>
+            </div>
+        -->
+</div>
+      
+<button class="btn btn-primary" type="submit" (click)="submit()">Enviar arquivo(s)</button>
+
+
+<br/>
+<mat-icon>playlist_add</mat-icon>
+<br/>
+<mat-icon>delete</mat-icon>
+<br/>
+<!--
+    <input type="text" (change)="getFileName(fileName.value)" #fileName /> <br/>
+-->
+<mat-icon>cloud_upload</mat-icon>
