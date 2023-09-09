@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,29 +26,12 @@ public class Uploader {
         path = "/uploadXML",
         consumes = {MediaType.TEXT_XML_VALUE}
     )
-    public ResponseEntity<String> upload(@RequestParam("xml") String xml) {
-        ResponseEntity<String> result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        return result;
-    }
-
-    @CrossOrigin(origins = "localhost:*")
-    @RequestMapping(
-        method = RequestMethod.POST,
-        path = "/uploadXMLFile",
-        consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
-    )
-    public ResponseEntity<String> upload(@RequestParam MultipartFile file)
-    throws InvalidContentTypeException {
-        
+    public ResponseEntity<String> upload(@RequestParam String xml) {
         ResponseEntity<String> result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         String message = "Apenas application/xml é permitido!";
 
         try {
-            if (!"application/xml".equals(file.getContentType())) {
-                throw new InvalidContentTypeException(message);
-            }
-            
-            Collection<String> codigos = ProcessarXMLs.processarXMLAgentes(file.getInputStream());
+            Collection<String> codigos = ProcessarXMLs.processarXMLAgentes(xml);
             codigos.forEach(codigo -> System.out.println(codigo));
 
             result = ResponseEntity.status(HttpStatus.OK).body(null);
@@ -62,5 +44,22 @@ public class Uploader {
         }
 
         return result;
+    }
+
+    @CrossOrigin(origins = "localhost:*")
+    @RequestMapping(
+        method = RequestMethod.POST,
+        path = "/uploadXMLFile",
+        consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
+    )
+    public ResponseEntity<String> upload(@RequestParam MultipartFile file)
+    throws InvalidContentTypeException {
+        String message = "Apenas application/xml é permitido!";
+
+        if (!"application/xml".equals(file.getContentType())) {
+            throw new InvalidContentTypeException(message);
+        }
+
+        return null;
     }
 }

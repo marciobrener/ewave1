@@ -9,7 +9,17 @@ import { Observable } from 'rxjs';
 })
 export class SecurityComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    let ox = document.getElementById("xpto")
+    console.log("ok")
+    debugger
+    /*
+    ox.addEventListener("click", () => {
+      alert("ok")
+    })
+    */
+
+  }
 
   ngOnInit(): void {
   }
