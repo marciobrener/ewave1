@@ -293,7 +293,7 @@
   </div>
 
   <mat-list #files>
-    <mat-list-item *ngFor="let item of items$.values()">
+    <mat-list-item *ngFor="let item of items.values()">
       <div style="padding: 5pt;">
         <span class="material-symbols-outlined" *ngIf="item.done">
           thumb_up
@@ -321,6 +321,7 @@
         <span class="material-symbols-outlined">
           cloud_upload
         </span>
+        <span style="padding-left: 10pt;">Selecionar arquivo(s)</span>
         <input
           formControlName="files"
           id="files"

@@ -10,6 +10,7 @@ import { XMLsUploaderComponent } from './ewave/components/xmls-uploader/xmls-upl
 import { SecurityComponent } from './ewave/security/security.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { MatListModule } from '@angular/material/list';
         MatIconModule,
         MatProgressSpinnerModule,
         MatListModule,
+        MatCardModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
             enabled: environment.production,
             // Register the ServiceWorker as soon as the app is stable

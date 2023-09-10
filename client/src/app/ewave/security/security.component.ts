@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpXhrBackend, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-security',
@@ -10,15 +10,6 @@ import { Observable } from 'rxjs';
 export class SecurityComponent implements OnInit {
 
   constructor() {
-    let ox = document.getElementById("xpto")
-    console.log("ok")
-    debugger
-    /*
-    ox.addEventListener("click", () => {
-      alert("ok")
-    })
-    */
-
   }
 
   ngOnInit(): void {
@@ -45,69 +36,15 @@ export class SecurityComponent implements OnInit {
     return result
   }
 
-  public static uploadXML(xml: string) /*: Promise<Object> */ {
-    const data = {"xml": xml}
+  public static ping(): boolean {
+    let request = new XMLHttpRequest()
+    request.open("GET", `${environment.host}/ping`, false)
 
-    const http = new HttpClient(new HttpXhrBackend({
-      build: () => new XMLHttpRequest()
-    }))
-
-    const url = 'http://localhost:5000/uploadXML'
-    const headers = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/xml',
-      }),
+    let ok = false
+    request.onreadystatechange = (response) => {
+      ok = ok || request.readyState == 4 && request.status == 200
     }
-
-    http.post(url, data, headers)
-    .subscribe(response => {
-      debugger
-      response
-    })
-  }
-
-  public static NotWorking_uploadXML(xml: string) /*: Promise<Object> */ {
-    const formData = new FormData()
-    const blob = new Blob([xml], {type: 'application/xml'})
-
-    formData.append("xml", blob, "filename")
-
-    const http = new HttpClient(new HttpXhrBackend({
-      build: () => new XMLHttpRequest()
-    }))
-
-    const url = 'http://localhost:5000/uploadXML'
-    const headers = {
-      headers: {
-        'Content-Type': 'application/xml'
-      }
-    }
-
-    http.post(url, formData, headers)
-    .subscribe(response => {
-      debugger
-      response
-    })
-  }
-
-  public static async uploadFileXML(value: string | Blob, filename: string | null): Promise<Object> {
-    const formData = new FormData()
-    if( value instanceof Blob) {
-      formData.append("file", value, filename ? filename : "filename")
-    } else {
-      formData.append("file", value)
-    }
-
-    const http = new HttpClient(new HttpXhrBackend({
-      build: () => new XMLHttpRequest()
-    }))
-
-    const url = 'http://localhost:5000/uploadXML'
-    const headers = {
-      headers: {'Content-Type': 'multipart/form-data'}
-    }
-
-    return http.post(url, formData, headers)
-    .subscribe(response => response)
+    request.send()
+    return ok
   }
 }

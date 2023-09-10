@@ -23,7 +23,7 @@ describe('SecurityComponent', () => {
     expect(component).toBeTruthy();
   });
 
-
+  it('parseXMLAgentes()', () => {
     let expected = `
     <?xml version="1.0" encoding="UTF-8"?>
     <agentes versao="1.0">
@@ -44,7 +44,6 @@ describe('SecurityComponent', () => {
     `
     expected = expected.replace(/\n/g, "").trim()
 
-  it('parseXMLAgentes()', () => {
     const test = `
     <?xml version="1.0" encoding="UTF-8"?>
     <agentes versao="1.0">
@@ -74,17 +73,8 @@ describe('SecurityComponent', () => {
     expect(result).toEqual(expected)
   })
 
-  it('StringToBlob', () => {
-    const blob = new Blob([expected], {type: 'application/xml'})
-    //SecurityComponent.uploadXML(blob, "filename")
-    SecurityComponent.uploadXML(expected)
-    /*
-    .then(response => {
-      console.log(response)
-    })
-    */
-
-    //expect(true).toEqual(true)
-  });
-
+  it('ping()', () => {
+    SecurityComponent.ping()
+    //expect(result).toEqual(expected)
+  })
 });

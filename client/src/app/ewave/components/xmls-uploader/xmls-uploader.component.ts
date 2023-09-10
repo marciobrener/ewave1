@@ -1,9 +1,13 @@
-import { Component,
+import {
+  Component,
   Injectable,
-  OnInit
-} from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { SecurityComponent } from './../../security/security.component';
+  OnInit,
+  Input,
+  NgZone
+} from '@angular/core'
+import { SecurityComponent } from './../../security/security.component'
+import { ExecuteItem } from './execute-item'
+import { environment } from 'src/environments/environment'
 
 @Component({
   selector: 'app-xmls-uploader',
@@ -11,140 +15,80 @@ import { SecurityComponent } from './../../security/security.component';
   styleUrls: ['./xmls-uploader.component.css']
 })
 
-
-
 @Injectable()
 export class XMLsUploaderComponent implements OnInit {
   readonly title = "Upload de arquivos XML"
-  private files: FileList | null = null
-  readonly items$ = new Map<string, ExecuteItem>()
 
-  constructor(private http$: HttpClient) {
+  @Input() items: Map<string, ExecuteItem>
+
+  constructor(public zone: NgZone) {
+    this.items = new Map<string, ExecuteItem>()
   }
 
   ngOnInit(): void {
   }
 
   onFilesChange(files: FileList): void {
-    this.files = files
     for (let i = 0; i < files.length; i++) {
         let file = files[i] as File
-        if (this.items$.has(file.name)) continue
-        this.items$.set(file.name, new ExecuteItem(file))
+        if (this.items.has(file.name)) continue
+        this.items.set(file.name, new ExecuteItem(file))
     }
 
-    this.startUploads()
+    this.upload()
   }
 
-  private startUploads() {
-    for (let item of this.items$.values()) {
-      if (!item.ready) continue
-      this.upload(item)
-      return
+  private hasNext(): boolean {
+    if (this.items.size < 1) return false
+    for (let item of this.items.values()) {
+      if (item.ready) return true
     }
+    return false
   }
 
-  private upload(item: ExecuteItem): void {
-    console.log(item.file.name)
-    item.uploading = true
+  private next(): ExecuteItem {
+    let item = this.items.values().next().value //DUMMY
+    for (let item of this.items.values()) {
+      if (item.ready) return item
+    }
+    return item
+  }
+
+  private upload(): void {
+    if (!this.hasNext()) return
+
+    const item = this.next()
+    console.debug(`Processando: ${item.file.name}`)
+    this.zone.run(() => item.uploading = true)
 
     let file = item.file
-    let fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      const xml = SecurityComponent.parseXMLAgentes(fileReader.result as string)
-      const formData = new FormData()
-      formData.append("xml", xml)
-
-      const url = 'http://localhost:5000/uploadXML'
-      let headers = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/xml'
-        }),
-      }
-
-      this.http$.post<string>(url, formData)
-      .subscribe(observer => {
-        debugger
-      })
-      .add(() => {
-        item.done = true
-        this.startUploads()
-      })
+    let fileReader = new FileReader()
+    fileReader.onload = (event) => {
+      item.content = SecurityComponent.parseXMLAgentes(fileReader.result as string)
+      const status = this.send(item)
+      this.zone.run(() => item.setStatus(status))
+      this.upload()
     }
 
-    fileReader.readAsText(file);
-  }
-}
-
-class ExecuteItem {
-  file: File
-  private _done: boolean
-  private _failed: boolean
-  private _waiting: boolean
-  private _uploading: boolean
-  private _xml: boolean
-  private _message: string
-
-  constructor(file: File) {
-    this.file = file
-    this._done = false
-    this._failed = false
-    this._uploading = false
-    this._xml = file.name.toLowerCase().endsWith(".xml")
-    this._waiting = this._xml
-    this._message = !this._xml ? "Não é um arquivo XML" : ""
+    fileReader.readAsText(file)
   }
 
-  public get xml(): boolean {
-    return this._xml
-  }
+  private send(item: ExecuteItem): number {
+    let request = new XMLHttpRequest()
 
-  public get done(): boolean {
-    return this._done
-  }
+    const url = `${environment.host}/xml`
+    request.open("POST", url, false)
+    request.setRequestHeader('Content-Type', 'application/xml; charset=utf-8')
+    request.setRequestHeader('Access-Control-Allow-Origin', '*')
+    request.setRequestHeader('Access-Control-Allow-Methods', 'POST')
+    request.setRequestHeader('Accept', '*/*')
+    request.setRequestHeader('Cache-Control', 'no-cache')
+    //request.timeout = 5 * 60 * 1000
+    //request.ontimeout = function () { alert("Timed out!!!"); }
 
-  public set done(value: boolean) {
-    this._done = value
-    this._failed = !value
-    this._uploading = false
-    this._waiting = false
-  }
+    //request.onreadystatechange = (state) => {}
 
-  public get failed(): boolean {
-    return this._failed
-  }
-
-  public set failed(value: boolean) {
-    this._failed = value
-    this._done = !value
-    this._uploading = false
-  }
-
-  public get uploading(): boolean {
-    return this._uploading
-  }
-
-  public set uploading(value: boolean) {
-    this._uploading = value
-    this._done = false
-    this._failed = false
-    this._waiting = false
-  }
-
-  public get waiting(): boolean {
-    return this._waiting
-  }
-
-
-  public get message(): string {
-    return this._message
-  }
-
-  public get ready(): boolean {
-    let result = this.xml
-    result = result && !this.uploading
-    result = result && !this.done
-    result = result && !this.failed
-    return result
+    request.send(item.content)
+    return request.status
   }
 }
